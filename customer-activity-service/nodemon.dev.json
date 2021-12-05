@@ -1,0 +1,25 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    "content",
+    "public"
+  ],
+  "verbose": false,
+  "execMap": {
+    "ts": "node --require ts-node/register"
+  },
+  "watch": [
+    "src/"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "PORT": 3002,
+    "RABBITMQ_URL": "amqp://localhost",
+    "POSTGRES_URL": "postgres://microservicedb_user:123456@localhost:5442/microservicedb",
+    "POSTGRES_POOL_MIN": 1,
+    "POSTGRES_POOL_MAX": 5
+  },
+  "ext": "js,json,ts"
+}

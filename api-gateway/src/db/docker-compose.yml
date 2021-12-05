@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  microservice_db:
+    image: postgres:latest
+    container_name: microservicedb_pg
+    ports:
+      - '5442:5432'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - microservice-pg-data:/var/lib/postgresql/data
+    restart: always
+    env_file:
+      - db.env
+
+volumes:
+  microservice-pg-data: {}

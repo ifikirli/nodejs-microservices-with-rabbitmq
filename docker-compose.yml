@@ -1,0 +1,92 @@
+version: "3.9"
+
+services:
+  node_microservice_db:
+    image: postgres:latest
+    container_name: node_microservice_db
+    ports:
+      - '5442:5432'
+    volumes:
+      - ./api-gateway/src/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - node-microservice-pg-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    env_file:
+      - db.env
+    networks:
+      - node-microservice-network
+  node_microservice_rabbitmq:
+    image: rabbitmq:3-management-alpine
+    depends_on:
+      - node_microservice_db
+    container_name: node_microservice_rabbitmq
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - node-microservice-network
+  node_microservice_api_gateway:
+    depends_on:
+      - node_microservice_db
+      - node_microservice_rabbitmq
+    build:
+      context: ./api-gateway
+    container_name: node_microservice_api_gateway
+    restart: unless-stopped
+    env_file: ./api-gateway/.prod.env
+    ports:
+      - 3000:3000
+    networks:
+      - node-microservice-network
+    stdin_open: true
+    tty: true
+  node_customer_activity_microservice:
+    depends_on:
+      - node_microservice_db
+      - node_microservice_rabbitmq
+    build:
+      context: ./customer-activity-service
+    container_name: node_customer_activity_microservice
+    restart: unless-stopped
+    env_file: ./customer-activity-service/.prod.env
+    ports:
+      - 3002:3002
+    networks:
+      - node-microservice-network
+    stdin_open: true
+    tty: true
+  node_customer_meeting_microservice:
+    depends_on:
+      - node_microservice_db
+      - node_microservice_rabbitmq
+    build:
+      context: ./customer-meeting-service
+    container_name: node_customer_meeting_microservice
+    restart: unless-stopped
+    env_file: ./customer-meeting-service/.prod.env
+    ports:
+      - 3003:3003
+    networks:
+      - node-microservice-network
+    stdin_open: true
+    tty: true
+  node_customer_microservice:
+    depends_on:
+      - node_microservice_db
+      - node_microservice_rabbitmq
+    build:
+      context: ./customer-service
+    container_name: node_customer_microservice
+    restart: unless-stopped
+    env_file: ./customer-service/.prod.env
+    ports:
+      - 3001:3001
+    networks:
+      - node-microservice-network
+    stdin_open: true
+    tty: true
+volumes:
+  node-microservice-pg-data:
+networks:
+  node-microservice-network:
+    driver: bridge
