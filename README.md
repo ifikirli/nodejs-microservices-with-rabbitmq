@@ -24,7 +24,7 @@ Services follows responsibilities below:
 
 Postgresql was used as database. Api gateway is responsible on database migration and services have only connection with database to process data. Knex.js was used as query builder. You can see more details from link https://knexjs.org/.
 
-Rabbitmq was used with messaging between services or between api gateway and services. you can see more details from link https://www.rabbitmq.com/getstarted.html. Api gateway and services used different messaging types that are below:
+Rabbitmq was used with messaging between services or between api gateway and services. you can see more details from link https://www.rabbitmq.com/getstarted.html. **Amqlib** npm package was used for rabbitmq operation. If you wonder details of amqlib methods you can find out them from link http://www.squaremobius.net/amqp.node/channel_api.html. Api gateway and services used different messaging types that are below:
 
     - remote procedure call(RPC), it is used if response must be waited. Specific queue waits a message and then processes message. Client waits response.
     - worker queue, message is sent to queue and response must not be waited.
